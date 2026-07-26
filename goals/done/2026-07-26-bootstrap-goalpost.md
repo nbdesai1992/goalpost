@@ -90,8 +90,17 @@ something concrete to check.
   endings, and `abandoned` reads as a judgment on work that was often correctly stopped.
 - **2026-07-26** — Added `review` between `active` and `done`. An agent shouldn't decide
   its own work is finished; this is where it hands back and stops.
-- **2026-07-26** — Built all deliverables, verified the hooks against the repo itself,
-  published to GitHub.
+- **2026-07-26** — Built all deliverables and tested the hooks against this repo. Testing
+  caught two bugs in the frontmatter parser, both of which would have made the system
+  quietly useless rather than visibly broken: `setdefault` failed to replace the `None`
+  placeholder left by a valueless key, so every `deliverables` list parsed as empty; and
+  `lstrip("./")` strips a character *set*, so `.claude/...` normalised to `claude/...` and
+  broke both the exemption check and path matching. A guard that silently approves
+  everything is worse than no guard, since nothing signals the failure.
+- **2026-07-26** — Verified `install.sh` end-to-end from the published URL: merges into an
+  existing `.claude/settings.json` without disturbing existing hooks or permissions, leaves
+  existing files alone, and is idempotent. Published at
+  https://github.com/nbdesai1992/goalpost.
 
 ## Outcome
 
