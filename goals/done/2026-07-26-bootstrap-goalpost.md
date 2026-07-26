@@ -101,6 +101,12 @@ something concrete to check.
   existing `.claude/settings.json` without disturbing existing hooks or permissions, leaves
   existing files alone, and is idempotent. Published at
   https://github.com/nbdesai1992/goalpost.
+- **2026-07-26** — Third bug, found by the tooling hanging on me rather than by reading it:
+  `goal_check.py` used `isatty()` to decide whether to read stdin, which is wrong. Stdin can
+  be a pipe with no writer — inside a shell pipeline, a CI step, a subshell — and then
+  `read()` blocks forever. Now polls with `select` before committing to a read. Verified
+  across all six invocation modes: CLI in a pipeline, CLI with stdin closed, and Stop-hook
+  mode both clean and with drift.
 
 ## Outcome
 

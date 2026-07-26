@@ -70,10 +70,32 @@ def report(root):
     return lines, bool(lines)
 
 
+def read_stdin(timeout=0.5):
+    """Hook JSON from stdin if any is waiting; empty string in CLI use.
+
+    A bare read() blocks forever when stdin is neither a tty nor closed — inside a
+    pipeline, a CI step, a subshell — so poll before committing to a read.
+    """
+    try:
+        if sys.stdin is None or sys.stdin.isatty():
+            return ""
+    except (AttributeError, ValueError):
+        return ""
+    try:
+        import select
+
+        if not select.select([sys.stdin], [], [], timeout)[0]:
+            return ""
+    except (OSError, ValueError, ImportError):
+        return ""  # can't tell whether data is coming; don't risk hanging
+    try:
+        return sys.stdin.read()
+    except (OSError, ValueError):
+        return ""
+
+
 def main():
-    stdin_data = ""
-    if not sys.stdin.isatty():
-        stdin_data = sys.stdin.read()
+    stdin_data = read_stdin()
 
     payload = {}
     if stdin_data.strip():
