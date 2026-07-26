@@ -1,0 +1,15 @@
+# OS / editor noise
+.DS_Store
+Thumbs.db
+*.swp
+
+# Python
+__pycache__/
+*.py[cod]
+
+# Local Claude Code overrides
+.claude/settings.local.json
+
+# Scratch — anything here is disposable and exempt from the goal rule
+scratch/
+tmp/
